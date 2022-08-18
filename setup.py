@@ -14,6 +14,6 @@ setup(name='PyPFF',
       author_email='alexander.schram@pff.com',
       url='https://github.com/pro-football-focus/pypff/',
       packages=['pypff'],
-      py_modules=['functions'],
+      py_modules=['pff'],
       install_requires=['pandas','requests']
      )
