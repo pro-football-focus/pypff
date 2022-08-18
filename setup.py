@@ -5,7 +5,7 @@ Created on Thu Aug 18 16:18:30 2022
 
 @author: apschram
 """
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(name='PyPFF',
       version='0.1',
@@ -13,5 +13,5 @@ setup(name='PyPFF',
       author='Alexander Schram',
       author_email='alexander.schram@pff.com',
       url='https://github.com/pro-football-focus/pypff/',
-      py_modules = ['functions.py']
+      packages=find_packages()
      )
