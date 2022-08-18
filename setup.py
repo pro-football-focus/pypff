@@ -5,7 +5,7 @@ Created on Thu Aug 18 16:18:30 2022
 
 @author: apschram
 """
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(name='PyPFF',
       version='0.1',
@@ -13,7 +13,7 @@ setup(name='PyPFF',
       author='Alexander Schram',
       author_email='alexander.schram@pff.com',
       url='https://github.com/pro-football-focus/pypff/',
-      packages=find_packages(),
+      packages=['get'],
       py_modules=['functions'],
-      install_requires=['pandas','requests','requests-cache']
+      install_requires=['pandas','requests']
      )
