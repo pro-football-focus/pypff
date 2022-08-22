@@ -17,7 +17,7 @@ pip install git+https://github.com/pro-football-focus/pypff.git
 ```
 
 ## API Sandbox Environment
-PFF FC offers a Sandbox environment which provides convenient access to one league of your choosing, completely free of charge. The Sandbox is a test environment. As part of your access and use of the Sandbox you acknowledge that you have read, understood and agree to all terms of the [User Agreement](https://docs.google.com/document/d/1mAWR2ptb6Uahs13a9-Jm0F9GBN6V4qDAZfOwE8mrdlg/edit?usp=sharing).
+PFF FC offers a Sandbox environment which provides convenient access to one league of your choosing, completely free of charge. The Sandbox is a test environment. As part of your access and use of the Sandbox you acknowledge that you have read, understood and agree to all terms of the [User Agreement](https://github.com/pro-football-focus/pypff/blob/main/docs/PFF%20API%20SANDBOX%20ENVIRONMENT%20USER%20AGREEMENT.pdf).
 
 ## Usage
 After successfully installing the package, import it:
