@@ -101,7 +101,7 @@ def get_player(url, key, player_id):
         print(response.text)
 
 def get_roster(url, key, game_id):
-    payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n    rosters {\\n        player {\\n            id\\n            nickname\\n        }\\n        positionGroupType\\n        shirtNumber\\n        team {\\n            id\\n            name\\n        }\\n    }\\n}\\n}\",\"variables\":{\"id\":1381}}"
+    payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n    rosters {\\n        player {\\n            id\\n            nickname\\n        }\\n        positionGroupType\\n        shirtNumber\\n        team {\\n            id\\n            name\\n        }\\n    }\\n}\\n}\",\"variables\":{\"id\":" + str(game_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
 
     try:
