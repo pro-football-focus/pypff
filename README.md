@@ -24,6 +24,7 @@ After successfully installing the package, import it:
 ```
 from pypff import pff
 ```
+Make sure to use the URL and key that your are provided with.
 In order to retrieve all leagues available to you, run:
 ```
 pff.get_leagues(url, key)
