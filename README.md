@@ -1,5 +1,5 @@
 # PFF FC Python Library
-PyPFF is a Python library developed by PFF FC. It provides convenient access to the PFF FC API from applications written in the Python language.
+PyPFF is a Python library developed by [PFF FC](https://fc.pff.com/). It provides convenient access to the PFF FC API from applications written in Python.
 
 ## Getting Your Questions Answered
 If you have a question that is not addressed here, there are several ways to get in touch:
