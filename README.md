@@ -54,6 +54,10 @@ In order to retrieve all players available to you, run:
 ```
 pff.get_players(url, key)
 ```
+Or alternatively, request all players for a given league:
+```
+pff..get_players_league(url, key, league_id = 1)
+```
 Or alternatively, request a specific player only:
 ```
 pff.get_player(url, key, player_id = 1)
