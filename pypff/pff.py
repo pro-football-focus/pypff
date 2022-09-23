@@ -124,12 +124,6 @@ def get_players_league(url, key, league_id):
     except:
         print(response.text)
 
-url = 'https://faraday.pff.com/api'
-key = '9a743638be8f9c0500b4fd8037e56529c67483397b913f37fafce72947d10ea3'
-league_id = 1
-
-df = get_players_league(url, key, league_id)
-
 def get_roster(url, key, game_id):
     payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n    rosters {\\n        player {\\n            id\\n            nickname\\n        }\\n        positionGroupType\\n        shirtNumber\\n        team {\\n            id\\n            name\\n        }\\n    }\\n}\\n}\",\"variables\":{\"id\":" + str(game_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
