@@ -100,6 +100,36 @@ def get_player(url, key, player_id):
     except:
         print(response.text)
 
+def get_players_league(url, key, league_id):
+    payload = "{\"query\":\"query league ($id: ID!) {\\n    league (id: $id) {\\n        games {\\n            rosters {\\n                player {\\n                    id\\n                    firstName\\n                    lastName\\n                    nickname\\n                    positionGroupType\\n                    nationality {\\n                        id\\n                        country\\n                    }\\n                    secondNationality {\\n                        id\\n                        country\\n                    }\\n                    weight\\n                    height\\n                    dob\\n                    gender\\n                    countryOfBirth {\\n                        id\\n                        country\\n                    }\\n                    euMember\\n                }\\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(league_id) + "}}"
+    response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
+
+    try:
+        df = pd.DataFrame(response.json()['data']['league']['games'])
+        df = df['rosters'].apply(pd.Series)
+        df = df.dropna(how = 'all', axis = 0)
+        
+        oneCol = []
+        colLength = len(list(df.columns))
+        for k in range(colLength):
+            oneCol.append(df[k])
+        
+        df = pd.concat(oneCol, ignore_index = True)
+        df = df.apply(pd.Series)['player'].apply(pd.Series)
+        df = df.drop_duplicates()
+        df = df.drop(columns = [0])
+        df = df.dropna(how = 'all', axis = 0)
+        
+        return df.infer_objects()
+    except:
+        print(response.text)
+
+url = 'https://faraday.pff.com/api'
+key = '9a743638be8f9c0500b4fd8037e56529c67483397b913f37fafce72947d10ea3'
+league_id = 1
+
+df = get_players_league(url, key, league_id)
+
 def get_roster(url, key, game_id):
     payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n    rosters {\\n        player {\\n            id\\n            nickname\\n        }\\n        positionGroupType\\n        shirtNumber\\n        team {\\n            id\\n            name\\n        }\\n    }\\n}\\n}\",\"variables\":{\"id\":" + str(game_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
@@ -132,4 +162,4 @@ def get_game_event(url, key, game_event_id):
         df = pd.DataFrame(response.json()['data']).T
         return df.infer_objects()
     except:
-        print(response.text)    
+        print(response.text)
