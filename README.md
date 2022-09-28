@@ -73,6 +73,10 @@ In order to retrieve all events of a specific game, run:
 ```
 pff.get_game_events(url, key, game_id = 1381)
 ```
+Or alternatively, run over a list of games to retrieve all game events:
+```
+pff.get_game_events_games(url, key, games = [1380, 1381])
+```
 Or alternatively, request a specific event only:
 ```
 pff.get_game_event(url, key, game_event_id = 1820408)
