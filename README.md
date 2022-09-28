@@ -20,7 +20,7 @@ pip install git+https://github.com/pro-football-focus/pypff.git
 ```
 If a function is listed in this repository but results in the following error, please try to uninstall and then install again.
 ```
-AttributeError: module ‘pypff.pff’ has no attribute ‘_function_’
+AttributeError: module ‘pypff.pff’ has no attribute ‘function’
 ```
 ## Usage
 After successfully installing the package, import it:
