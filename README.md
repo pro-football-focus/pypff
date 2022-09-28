@@ -18,7 +18,10 @@ Use your unique PFF FC API key or request an API key to PFF FC’s free-forever 
 ```
 pip install git+https://github.com/pro-football-focus/pypff.git
 ```
-
+If a function is listed in this repository but results in the following error, please try to uninstall and then install again.
+```
+AttributeError: module ‘pypff.pff’ has no attribute ‘function’
+```
 ## Usage
 After successfully installing the package, import it:
 ```
