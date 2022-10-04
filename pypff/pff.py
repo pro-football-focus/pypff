@@ -95,25 +95,25 @@ def get_players_league(url, key, league_id):
     payload = "{\"query\":\"query league ($id: ID!) {\\n    league (id: $id) {\\n        games {\\n            rosters {\\n                player {\\n                    id\\n                    firstName\\n                    lastName\\n                    nickname\\n                    positionGroupType\\n                    nationality {\\n                        id\\n                        country\\n                    }\\n                    secondNationality {\\n                        id\\n                        country\\n                    }\\n                    weight\\n                    height\\n                    dob\\n                    gender\\n                    countryOfBirth {\\n                        id\\n                        country\\n                    }\\n                    euMember\\n                }\\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(league_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
 
-    try:
-        df = pd.DataFrame(response.json()['data']['league']['games'])
-        df = df['rosters'].apply(pd.Series)
-        df = df.dropna(how = 'all', axis = 0)
-        
-        oneCol = []
-        colLength = len(list(df.columns))
-        for k in range(colLength):
-            oneCol.append(df[k])
-        
-        df = pd.concat(oneCol, ignore_index = True)
-        df = df.apply(pd.Series)['player'].apply(pd.Series)
-        df = df.drop_duplicates()
-        df = df.drop(columns = [0])
-        df = df.dropna(how = 'all', axis = 0)
-        
-        return df.infer_objects()
-    except:
-        print(response.text)
+    # try:
+    df = pd.DataFrame(response.json()['data']['league']['games'])
+    df = df['rosters'].apply(pd.Series)
+    df = df.dropna(how = 'all', axis = 0)
+    
+    oneCol = []
+    colLength = len(list(df.columns))
+    for k in range(colLength):
+        oneCol.append(df[k])
+    
+    df = pd.concat(oneCol, ignore_index = True)
+    df = df.apply(pd.Series)['player'].apply(pd.Series)
+    df = df.drop_duplicates()
+    df = df.drop(columns = [0])
+    df = df.dropna(how = 'all', axis = 0)
+    
+    return df.infer_objects()
+    # except:
+    #     print(response.text)
 
 def get_player(url, key, player_id):
     payload = "{\"query\":\"query player ($id: ID!) {\\n    player (id: $id) {\\n        id\\n        firstName\\n        lastName\\n        nickname\\n        positionGroupType\\n        nationality {\\n            id\\n            country\\n        }\\n        secondNationality {\\n            id\\n            country\\n        }\\n        weight\\n        height\\n        dob\\n        gender\\n        countryOfBirth {\\n            id\\n            country\\n        }\\n        euMember\\n        rosters {\\n            game {\\n                id\\n            }\\n            started\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(player_id) + "}}"
