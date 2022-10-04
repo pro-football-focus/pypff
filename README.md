@@ -35,7 +35,7 @@ pff.get_leagues(url, key)
 ```
 Or alternatively, request a specific league only:
 ```
-pff.get_league(url, key, league_id = 1)
+pff.get_league(url, key, league_id)
 ```
 In order to retrieve all teams available to you, run:
 ```
@@ -43,43 +43,39 @@ pff.get_teams(url, key)
 ```
 Or alternatively, request a specific team only:
 ```
-pff.get_team(url, key, team_id = 1)
+pff.get_team(url, key, team_id)
 ```
 In order to retrieve all games from a specific league, run:
 ```
-pff.get_games(url, key, league_id = 1)
+pff.get_games(url, key, league_id)
 ```
 Or alternatively, request a specific game only:
 ```
-pff.get_game(url, key, game_id = 1381)
+pff.get_game(url, key, game_id)
 ```
-In order to retrieve all players available to you, run:
+In order to retrieve all players for a given league, run:
 ```
-pff.get_players(url, key)
-```
-Or alternatively, request all players for a given league:
-```
-pff.get_players_league(url, key, league_id = 1)
+pff.get_players_league(url, key)
 ```
 Or alternatively, request a specific player only:
 ```
-pff.get_player(url, key, player_id = 1)
+pff.get_player(url, key, player_id)
 ```
 In order to retrieve the roster of a specific game, run:
 ```
-pff.get_roster(url, key, game_id = 1381)
+pff.get_roster(url, key, game_id)
 ```
 In order to retrieve all events of a specific game, run:
 ```
-pff.get_game_events(url, key, game_id = 1381)
+pff.get_game_events(url, key, game_id)
 ```
 Or alternatively, run over a list of games to retrieve all game events:
 ```
-pff.get_game_events_games(url, key, games = [1380, 1381])
+pff.get_game_events_games(url, key, games)
 ```
 Or alternatively, request a specific event only:
 ```
-pff.get_game_event(url, key, game_event_id = 1820408)
+pff.get_game_event(url, key, game_event_id)
 ```
 
 ## GraphQL Resources
