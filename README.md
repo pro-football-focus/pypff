@@ -53,7 +53,7 @@ Or alternatively, request a specific game only:
 ```
 pff.get_game(url, key, game_id)
 ```
-In order to retrieve all players for a given league, run:
+In order to retrieve all players from a specific league, run:
 ```
 pff.get_players_league(url, key, league_id)
 ```
