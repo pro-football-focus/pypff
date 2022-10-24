@@ -8,12 +8,12 @@ Created on Thu Aug 18 16:18:30 2022
 from setuptools import setup
 
 setup(name='PyPFF',
-      version='0.1',
+      version='0.2',
       description='PFF FC Software Development Kit for Python',
       author='PFF FC',
       author_email='fchelp@pff.com',
       url='https://github.com/pro-football-focus/pypff/',
       packages=['pypff'],
-      py_modules=['pff'],
-      install_requires=['pandas','requests']
+      py_modules=['pff','normalize'],
+      install_requires=['pandas','requests','pyhumps']
      )
