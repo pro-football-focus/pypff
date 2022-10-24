@@ -16,7 +16,5 @@ setup(name='PyPFF',
       # packages=['pypff/'],
       packages=find_packages(),
       py_modules=['pff','normalize'],
-      install_requires=['pandas','requests','pyhumps'],
-      package_dir={'':'norm'},
-      include_package_data=True
+      install_requires=['pandas','requests','pyhumps']
      )
