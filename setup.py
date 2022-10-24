@@ -15,5 +15,6 @@ setup(name='PyPFF',
       url='https://github.com/pro-football-focus/pypff/',
       packages=['pypff'],
       py_modules=['pff','normalize'],
-      install_requires=['pandas','requests','pyhumps']
+      install_requires=['pandas','requests','pyhumps'],
+      include_package_data=True
      )
