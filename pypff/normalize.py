@@ -9,10 +9,15 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 import humps
+import sys
+import os
+
+current_path = os.path.dirname(os.path.realpath(__file__))  
+sys.path.append(os.path.dirname(current_path))
 
 from pypff import pff
 
-def normalize_shooter_grade(url,key,game_event_id):
+def shooter_grade(url,key,game_event_id):
     ## RETRIEVE GAME EVENT
     df = pff.get_game_event(url, key, game_event_id)
     
@@ -79,8 +84,8 @@ def normalize_shooter_grade(url,key,game_event_id):
     df = df.merge(categorical, how = 'inner', left_index = True, right_index = True)
     
     ## USE RESULTS OF THE LINEAR REGRESSION TO PREDICT EXPECTED GRADE
-    ls = sm.load('norm/' + 'shooting' + '_grade_model.pickle')
-    variables = pd.read_pickle('norm/' + 'shooting' + '_grade_variables.pickle')
+    ls = sm.load(current_path + 'norm/' + 'shooting' + '_grade_model.pickle')
+    variables = pd.read_pickle(current_path + 'norm/' + 'shooting' + '_grade_variables.pickle')
     
     ## SET VARIABLES THAT ARE MISSING TO 0
     for variable in variables:
