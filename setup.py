@@ -16,6 +16,6 @@ setup(name='PyPFF',
       packages=['pypff'],
       py_modules=['pff','normalize'],
       install_requires=['pandas','requests','pyhumps'],
-      package_dir={'':'pypff'},
+      # package_dir={'':'pypff'},
       package_data={'norm':['*.pickle']}
      )
