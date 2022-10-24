@@ -84,8 +84,8 @@ def shooter_grade(url,key,game_event_id):
     df = df.merge(categorical, how = 'inner', left_index = True, right_index = True)
     
     ## USE RESULTS OF THE LINEAR REGRESSION TO PREDICT EXPECTED GRADE
-    ls = sm.load(current_path + '/norm/shooting_grade_model.pickle')
-    variables = pd.read_pickle(current_path + '/norm/shooting_grade_variables.pickle')
+    ls = sm.load(current_path + '/shooting_grade_model.pickle')
+    variables = pd.read_pickle(current_path + '/shooting_grade_variables.pickle')
     
     ## SET VARIABLES THAT ARE MISSING TO 0
     for variable in variables:
