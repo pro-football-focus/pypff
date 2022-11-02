@@ -9,22 +9,22 @@ import requests
 import pandas as pd
 import tqdm
 
-def get_leagues(url, key):
-    payload = "{\"query\":\"query leagues {\\n    leagues {\\n        id\\n        name\\n        games {\\n            id\\n            season\\n        }\\n    }\\n}\",\"variables\":{}}"
+def get_competitions(url, key):
+    payload = "{\"query\":\"query competitions {\\n    competitions {\\n        id\\n        name\\n        games {\\n            id\\n            season\\n        }\\n    }\\n}\",\"variables\":{}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
     
     try:
-        df = pd.DataFrame.from_dict(response.json()['data']['leagues'])
+        df = pd.DataFrame.from_dict(response.json()['data']['competitions'])
         return df.infer_objects()
     except:
         print(response.text)
 
-def get_league(url, key, league_id):
-    payload = "{\"query\":\"query league ($id: ID!) {\\n    league (id: $id) {\\n        id\\n        name\\n        games {\\n            id\\n            season\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(league_id) + "}}"
+def get_competition(url, key, competition_id):
+    payload = "{\"query\":\"query competition ($id: ID!) {\\n    competition (id: $id) {\\n        id\\n        name\\n        games {\\n            id\\n            season\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(competition_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
 
     try:
-        df = pd.DataFrame(response.json()['data']['league'])
+        df = pd.DataFrame(response.json()['data']['competition'])
         return df.infer_objects()
     except:
         print(response.text)
@@ -51,26 +51,26 @@ def get_team(url, key, team_id):
     except:
         print(response.text)
 
-def get_games(url, key, league_id):
-    payload = "{\"query\":\"query league ($id: ID!) {\\n    league (id: $id) {\\n        id\\n        name\\n        games {\\n            id\\n            date\\n            season\\n            week\\n            homeTeam {\\n                id\\n                name\\n                shortName\\n            }\\n            awayTeam {\\n                id\\n                name\\n                shortName\\n            }\\n            startPeriod1\\n            endPeriod1\\n            startPeriod2\\n            endPeriod2\\n            period1\\n            period2\\n            halfPeriod\\n            homeTeamStartLeft\\n            homeTeamKit {\\n                name\\n                primaryColor\\n                primaryTextColor\\n                secondaryColor\\n                secondaryTextColor\\n            }\\n            awayTeamKit {\\n                name\\n                primaryColor\\n                primaryTextColor\\n                secondaryColor\\n                secondaryTextColor\\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(league_id) + "}}"
+def get_games(url, key, competition_id):
+    payload = "{\"query\":\"query competition ($id: ID!) {\\n    competition (id: $id) {\\n        id\\n        name\\n        games {\\n            id\\n            date\\n            season\\n            week\\n            homeTeam {\\n                id\\n                name\\n                shortName\\n            }\\n            awayTeam {\\n                id\\n                name\\n                shortName\\n            }\\n            startPeriod1\\n            endPeriod1\\n            startPeriod2\\n            endPeriod2\\n            period1\\n            period2\\n            halfPeriod\\n            homeTeamStartLeft\\n            homeTeamKit {\\n                name\\n                primaryColor\\n                primaryTextColor\\n                secondaryColor\\n                secondaryTextColor\\n            }\\n            awayTeamKit {\\n                name\\n                primaryColor\\n                primaryTextColor\\n                secondaryColor\\n                secondaryTextColor\\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(competition_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
     
     try:
-        df = pd.DataFrame.from_dict(response.json()['data']['league']['games'])
+        df = pd.DataFrame.from_dict(response.json()['data']['competition']['games'])
         
-        league = pd.DataFrame(index = df.index)
-        league.loc[:,'id'] = response.json()['data']['league']['id']
-        league.loc[:,'name'] = response.json()['data']['league']['name']
-        league['league'] = league[['id','name']].to_dict(orient = 'records')
+        competition = pd.DataFrame(index = df.index)
+        competition.loc[:,'id'] = response.json()['data']['competition']['id']
+        competition.loc[:,'name'] = response.json()['data']['competition']['name']
+        competition['competition'] = competition[['id','name']].to_dict(orient = 'records')
         
-        df = df.merge(league[['league']], how = 'left', left_index = True, right_index = True)
+        df = df.merge(competition[['competition']], how = 'left', left_index = True, right_index = True)
         df = df.reindex(sorted(df.columns), axis = 1).infer_objects()
         return df.infer_objects()
     except:
         print(response.text)
 
 def get_game(url, key, game_id):
-    payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n        league {\\n            id\\n            name\\n        }\\n        date\\n        season\\n        week\\n        homeTeam {\\n            id\\n            name\\n            shortName\\n        }\\n        awayTeam {\\n            id\\n            name\\n            shortName\\n        }\\n        startPeriod1\\n        endPeriod1\\n        startPeriod2\\n        endPeriod2\\n        period1\\n        period2\\n        halfPeriod\\n        homeTeamStartLeft\\n        homeTeamKit {\\n            name\\n            primaryColor\\n            primaryTextColor\\n            secondaryColor\\n            secondaryTextColor\\n        }\\n        awayTeamKit {\\n            name\\n            primaryColor\\n            primaryTextColor\\n            secondaryColor\\n            secondaryTextColor\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(game_id) + "}}"
+    payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n        competition {\\n            id\\n            name\\n        }\\n        date\\n        season\\n        week\\n        homeTeam {\\n            id\\n            name\\n            shortName\\n        }\\n        awayTeam {\\n            id\\n            name\\n            shortName\\n        }\\n        startPeriod1\\n        endPeriod1\\n        startPeriod2\\n        endPeriod2\\n        period1\\n        period2\\n        halfPeriod\\n        homeTeamStartLeft\\n        homeTeamKit {\\n            name\\n            primaryColor\\n            primaryTextColor\\n            secondaryColor\\n            secondaryTextColor\\n        }\\n        awayTeamKit {\\n            name\\n            primaryColor\\n            primaryTextColor\\n            secondaryColor\\n            secondaryTextColor\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(game_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
     
     try:
@@ -91,12 +91,12 @@ def get_game(url, key, game_id):
 #     except:
 #         print(response.text)
 
-def get_players_league(url, key, league_id):
-    payload = "{\"query\":\"query league ($id: ID!) {\\n    league (id: $id) {\\n        games {\\n            rosters {\\n                player {\\n                    id\\n                    firstName\\n                    lastName\\n                    nickname\\n                    positionGroupType\\n                    nationality {\\n                        id\\n                        country\\n                    }\\n                    secondNationality {\\n                        id\\n                        country\\n                    }\\n                    weight\\n                    height\\n                    dob\\n                    gender\\n                    countryOfBirth {\\n                        id\\n                        country\\n                    }\\n                    euMember\\n                }\\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(league_id) + "}}"
+def get_players_competition(url, key, competition_id):
+    payload = "{\"query\":\"query competition ($id: ID!) {\\n    competition (id: $id) {\\n        games {\\n            rosters {\\n                player {\\n                    id\\n                    firstName\\n                    lastName\\n                    nickname\\n                    positionGroupType\\n                    nationality {\\n                        id\\n                        country\\n                    }\\n                    secondNationality {\\n                        id\\n                        country\\n                    }\\n                    weight\\n                    height\\n                    dob\\n                    gender\\n                    countryOfBirth {\\n                        id\\n                        country\\n                    }\\n                    euMember\\n                }\\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(competition_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
 
     try:
-        df = pd.DataFrame(response.json()['data']['league']['games'])
+        df = pd.DataFrame(response.json()['data']['competition']['games'])
         df = df['rosters'].apply(pd.Series)
         df = df.dropna(how = 'all', axis = 0)
         
