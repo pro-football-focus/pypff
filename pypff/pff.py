@@ -30,7 +30,7 @@ def get_competition(url, key, competition_id):
         print(response.text)
 
 def get_teams(url, key):
-    payload = "{\"query\":\"query teams {\\n    teams {\\n        id\\n        name\\n        shortName\\n        country\\n        homeGames {\\n            id\\n        }\\n        awayGames {\\n            id\\n        }\\n    }\\n}\",\"variables\":{}}"    
+    payload = "{\"query\":\"query teams {\\n    teams {\\n        id\\n        name\\n        shortName\\n        country\\n        homeGames {\\n            id\\n        }\\n        awayGames {\\n            id\\n        }\\n        kits {\\n            primaryColor\\n            secondaryColor\\n            primaryTextColor\\n            secondaryTextColor\\n        }\\n    }\\n}\",\"variables\":{}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
     
     try:
@@ -40,7 +40,7 @@ def get_teams(url, key):
         print(response.text)        
 
 def get_team(url, key, team_id):
-    payload = "{\"query\":\"query team ($id: ID!) {\\n    team (id: $id) {\\n        id\\n        name\\n        shortName\\n        country\\n        homeGames {\\n            id\\n        }\\n        awayGames {\\n            id\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(team_id) + "}}"
+    payload = "{\"query\":\"query team ($id: ID!) {\\n    team (id: $id) {\\n        id\\n        name\\n        shortName\\n        country\\n        homeGames {\\n            id\\n        }\\n        awayGames {\\n            id\\n        }\\n        kits {\\n            primaryColor\\n            secondaryColor\\n            primaryTextColor\\n            secondaryTextColor\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(team_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
 
     try:
