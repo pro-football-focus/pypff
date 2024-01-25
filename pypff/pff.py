@@ -183,3 +183,21 @@ def get_game_events_games(url, key, games):
             print(response.text) 
     final_df = pd.concat(df_list, ignore_index = True)
     return final_df.infer_objects()
+
+def get_scoring_events(url, key, competition_id, season):
+    payload = "{\"query\":\"  query($competitionId: ID!, $season: String!) {\\n       scoringEvents(competitionId: $competitionId, season: $season) {\\n            id gameId startTime formattedGameClock outType\\n        }\\n    }\\n\",\"variables\":{\"competitionId\":" + str(competition_id) + ",\"season\":\"" + str(season) + "\"}}"
+    response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
+    
+    try:
+        df = pd.DataFrame.from_dict(response.json()['data']['scoringEvents'])
+        df['gameId'] = df['gameId'].astype(int)
+        
+        df_pivot = df.groupby(['gameId','outType'])[['id']].count().reset_index(drop = False)
+        df_pivot = df_pivot.pivot(index = 'gameId', columns = 'outType', values = 'id').fillna(0)
+        df_pivot = df_pivot.rename(columns = {'A':'awayGoals','H':'homeGoals'}).reset_index(drop = False)
+        
+        return df.infer_objects(), df_pivot.infer_objects()
+    except:
+        print(response.text)
+        
+    
