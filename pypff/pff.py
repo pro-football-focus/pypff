@@ -185,7 +185,7 @@ def get_game_events_games(url, key, games):
     return final_df.infer_objects()
 
 def get_scoring_events(url, key, competition_id, season):
-    payload = "{\"query\":\"  query($competitionId: ID!, $season: String!) {\\n       scoringEvents(competitionId: $competitionId, season: $season) {\\n            id gameId startTime formattedGameClock outType\\n        }\\n    }\\n\",\"variables\":{\"competitionId\":" + str(competition_id) + ",\"season\":\"" + str(season) + "\"}}"
+    payload = "{\"query\":\"  query($competitionId: ID!, $season: String!) {\\n       scoringEvents(competitionId: $competitionId, season: $season) {\\n            id\\n            gameId\\n            period\\n            startTime\\n            formattedGameClock\\n            outType\\n        }\\n    }\\n\",\"variables\":{\"competitionId\":" + str(competition_id) + ",\"season\":\"" + str(season) + "\"}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
     
     try:
