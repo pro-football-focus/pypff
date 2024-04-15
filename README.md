@@ -8,7 +8,7 @@ If you have a question that is not addressed here, there are several ways to get
 - Drop us a note at fchelp@pff.com 
 
 ## Documentation
-See the [PFF FC API Documentation](https://fc-staging.pff.com/docs). This documentation also includes PFF FC’s data specification. 
+See the [PFF FC API Documentation](https://fc.pff.com/docs). This documentation also includes PFF FC’s data specification. 
 
 ## API Sandbox Environment
 PFF FC offers a Sandbox environment which provides convenient access to one competition of your choosing, completely free of charge. The Sandbox is a test environment. As part of your access and use of the Sandbox you acknowledge that you have read, understood and agree to all terms of the [User Agreement](https://github.com/pro-football-focus/pypff/blob/main/docs/PFF%20API%20SANDBOX%20ENVIRONMENT%20USER%20AGREEMENT.pdf).
