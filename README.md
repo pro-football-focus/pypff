@@ -26,7 +26,6 @@ AttributeError: module ‘pypff.pff’ has no attribute ‘function’
 After successfully installing the package, import it:
 ```
 from pypff import pff
-from pypff import normalize
 ```
 Make sure to use the URL and key that your are provided with.
 
@@ -77,6 +76,10 @@ pff.get_game_events_games(url, key, games)
 Or alternatively, request a specific event only:
 ```
 pff.get_game_event(url, key, game_event_id)
+```
+To retrieve all goalscoring events from a season for a given competition, run:
+```
+pff.get_scoring_events(url, key, competition_id, season)
 ```
 
 ## GraphQL Resources
