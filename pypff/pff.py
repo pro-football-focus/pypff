@@ -55,7 +55,7 @@ def get_competition(url, key, competition_id):
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
 
     try:
-        df = pd.DataFrame(response.json()['data']['competition'])
+        df = pd.DataFrame([response.json()['data']['competition']])
         return df.infer_objects()
     except:
         print(response.text)
@@ -246,7 +246,22 @@ def get_player(url, key, player_id):
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
     
     try:
-        df = pd.DataFrame(response.json()['data']['player'])
+        player_data = response.json()['data']['player']
+        player_record = {
+            'player_id': player_data['id'],
+            'first_name': player_data['firstName'],
+            'last_name': player_data['lastName'],
+            'dob': player_data['dob'],
+            'height': player_data['height'],
+            'nickname': player_data['nickname'],
+            'position_group': player_data['positionGroupType'],
+            'nationality': player_data['nationality']['country'],
+            'second_nationality': player_data['secondNationality']['country'],
+            'transfermarkt_id': player_data['transfermarktPlayerId'],
+            'rosters': player_data['rosters']  # This will remain a nested list of dicts
+        }
+        
+        df = pd.DataFrame([player_record])
         return df.infer_objects()
     except:
         print(response.text)
