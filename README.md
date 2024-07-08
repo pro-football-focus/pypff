@@ -78,10 +78,6 @@ Or alternatively, request a specific event only:
 ```
 pff.get_game_event(url, key, game_event_id)
 ```
-To normalize the grade given to a shooter (only on shooting events), run:
-```
-normalize.shooter_grade(url, key, game_event_id)
-```
 
 ## GraphQL Resources
 GraphQL is the query language for PFF FC’s APIs and provides an alternative to REST and ad-hoc webservice architectures. It allows clients to define the structure of the data required, and exactly the same structure of the data is returned from the server. It is a strongly typed runtime which allows clients to dictate what data is needed.
