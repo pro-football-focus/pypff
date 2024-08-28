@@ -76,7 +76,7 @@ def get_teams(url, key):
     df: a dataframe containing the team information
     
     '''
-    payload = "{\"query\":\"query teams {\\n    teams {\\n        id\\n        name\\n        shortName\\n        country\\n        homeGames {\\n            id\\n        }\\n        awayGames {\\n            id\\n        }\\n        kits {\\n            id\\n            name\\n            primaryColor\\n            secondaryColor\\n            primaryTextColor\\n            secondaryTextColor\\n        }\\n        homeStadium {\\n            id\\n            name\\n            pitchLength\\n            pitchWidth\\n        }\\n    }\\n}\",\"variables\":{}}"
+    payload = "{\"query\":\"query teams {\\n    teams {\\n        id\\n        name\\n        shortName\\n        country\\n        homeGames {\\n            id\\n        }\\n        awayGames {\\n            id\\n        }\\n        kits {\\n            id\\n            name\\n            primaryColor\\n            secondaryColor\\n            primaryTextColor\\n            secondaryTextColor\\n        }\\n        homeStadium {\\n            id\\n            name\\n            pitches {\\n                id\\n#                grassType\\n                length\\n                width\\n                startDate\\n                endDate\\n            }\\n        }\\n    }\\n}\",\"variables\":{}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
     
     try:
@@ -103,7 +103,7 @@ def get_team(url, key, team_id):
     df: a dataframe containing the team information
     
     '''
-    payload = "{\"query\":\"query team ($id: ID!) {\\n    team (id: $id) {\\n        id\\n        name\\n        shortName\\n        country\\n        homeGames {\\n            id\\n        }\\n        awayGames {\\n            id\\n        }\\n        kits {\\n            id\\n            name\\n            primaryColor\\n            secondaryColor\\n            primaryTextColor\\n            secondaryTextColor\\n        }\\n        homeStadium {\\n            id\\n            name\\n            pitchLength\\n            pitchWidth\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(team_id) + "}}"
+    payload = "{\"query\":\"query team ($id: ID!) {\\n    team (id: $id) {\\n        id\\n        name\\n        shortName\\n        country\\n        homeGames {\\n            id \\n        }\\n        awayGames {\\n            id\\n        }\\n        kits {\\n            id\\n            name\\n            primaryColor\\n            secondaryColor\\n            primaryTextColor\\n            secondaryTextColor\\n        }\\n        homeStadium {\\n            id\\n            name\\n            pitches {\\n                id\\n#                grassType\\n                length\\n                width\\n                startDate\\n                endDate\\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(team_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
 
     try:
@@ -131,8 +131,7 @@ def get_games(url, key, competition_id):
     df: a dataframe containing the game information
     
     '''
-    payload = "{\"query\":\"query competition ($id: ID!) {\\n    competition (id: $id) {\\n        id\\n        name\\n        games {\\n            id\\n            date\\n            season\\n            week\\n            homeTeam {\\n                id\\n                name\\n                shortName\\n            }\\n            awayTeam {\\n                id\\n                name\\n                shortName\\n            }\\n            startPeriod1\\n            endPeriod1\\n            startPeriod2\\n            endPeriod2\\n            period1\\n            period2\\n            halfPeriod\\n            homeTeamStartLeft\\n            homeTeamKit {\\n                name\\n                primaryColor\\n                primaryTextColor\\n                secondaryColor\\n                secondaryTextColor\\n            }\\n            awayTeamKit {\\n                name\\n                primaryColor\\n                primaryTextColor\\n                secondaryColor\\n                secondaryTextColor\\n            }\\n            stadium {\\n                id\\n                name\\n                pitchLength\\n                pitchWidth\\n            }\\n            videos {\\n                id\\n                fps\\n                videoUrl\\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(competition_id) + "}}"
-    
+    payload = "{\"query\":\"query competition ($id: ID!) {\\n    competition (id: $id) {\\n        id\\n        name\\n        games {\\n            id\\n            date\\n            season\\n            week\\n            homeTeam {\\n                id\\n                name\\n                shortName\\n            }\\n            awayTeam {\\n                id\\n                name\\n                shortName\\n            }\\n            startPeriod1\\n            endPeriod1\\n            startPeriod2\\n            endPeriod2\\n            period1\\n            period2\\n            halfPeriod\\n            homeTeamStartLeft\\n            homeTeamKit {\\n                name\\n                primaryColor\\n                primaryTextColor\\n                secondaryColor\\n                secondaryTextColor\\n            }\\n            awayTeamKit {\\n                name\\n                primaryColor\\n                primaryTextColor\\n                secondaryColor\\n                secondaryTextColor\\n            }\\n            stadium {\\n                id\\n                name\\n                pitches {\\n                    id\\n#                    grassType\\n                    length\\n                    width\\n                    startDate\\n                    endDate\\n                }\\n            }\\n            videos {\\n                id\\n                fps\\n                videoUrl\\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(competition_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
     
     try:
@@ -167,8 +166,7 @@ def get_game(url, key, game_id):
     df: a dataframe containing the game information
     
     '''
-    payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n        competition {\\n            id\\n            name\\n        }\\n        date\\n        stadium{\\n            id\\n            name\\n        pitchLength\\n        pitchWidth\\n        }\\n        videos{\\n            id\\n            fps\\n        \\n            videoUrl}\\n        season\\n        week\\n        homeTeam {\\n            id\\n            name\\n            shortName\\n        }\\n        awayTeam {\\n            id\\n            name\\n            shortName\\n        }\\n        startPeriod1\\n        endPeriod1\\n        startPeriod2\\n        endPeriod2\\n        period1\\n        period2\\n        halfPeriod\\n        homeTeamStartLeft\\n        homeTeamKit {\\n            name\\n            primaryColor\\n            primaryTextColor\\n            secondaryColor\\n            secondaryTextColor\\n        }\\n        awayTeamKit {\\n            name\\n            primaryColor\\n            primaryTextColor\\n            secondaryColor\\n            secondaryTextColor\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(game_id) + "}}"
-
+    payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n        competition {\\n            id\\n            name\\n        }\\n        date\\n        season\\n        week\\n        homeTeam {\\n            id\\n            name\\n            shortName\\n        }\\n        awayTeam {\\n            id\\n            name\\n            shortName\\n        }\\n        startPeriod1\\n        endPeriod1\\n        startPeriod2\\n        endPeriod2\\n        period1\\n        period2\\n        halfPeriod\\n        homeTeamStartLeft\\n        homeTeamKit {\\n            name\\n            primaryColor\\n            primaryTextColor\\n            secondaryColor\\n            secondaryTextColor\\n        }\\n        awayTeamKit {\\n            name\\n            primaryColor\\n            primaryTextColor\\n            secondaryColor\\n            secondaryTextColor\\n        }\\n        stadium {\\n            id\\n            name\\n            pitches {\\n                id\\n#                grassType\\n                length\\n                width\\n                startDate\\n                endDate\\n            }\\n        }\\n        videos {\\n            id\\n            fps\\n            videoUrl\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(game_id) + "}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
     
     try:
@@ -216,7 +214,11 @@ def get_players_competition(url, key, competition_id):
         df['rank'] = df.groupby('id')['index'].rank('dense', ascending = False)
         df = df[df['rank'] == 1]
         # df = df.drop_duplicates()
-        df = df.drop(columns = [0,'index','rank'])
+        for col in [0,'index','rank']:
+            try:
+                df = df.drop(columns = [col])
+            except:
+                continue
         df = df.dropna(how = 'all', axis = 0)
         
         df['id'] = df['id'].astype(int)
