@@ -7,6 +7,7 @@ Created on Thu Jul 21 11:09:12 2022
 """
 import requests
 import pandas as pd
+import numpy as np
 import tqdm
 
 def get_competitions(url, key):
@@ -423,4 +424,86 @@ def get_scoring_events(url, key, competition_id, season):
     except:
         print(response.text)
         
+def get_otb_data(url, key, game_id):
+    ''' 
+    Retrieves all On-The-Ball events of a game for a given game_id.
     
+    Parameters
+    -----------
+    
+    url: a string that points toward the API, i.e. 'https://faraday.pff.com/api'
+    key: a string that serves as the API key
+    game_id: an integer to select the game
+
+
+    Returns
+    ---------
+    
+    df: a dataframe containing the On-The-Ball events
+    
+    '''
+    payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n        gameEvents {\\n            id\\n            duration\\n            endTime\\n            endType\\n            formattedGameClock\\n            gameClock\\n            gameEventType\\n            outType\\n            player {\\n                id\\n                nickname\\n            }\\n            playerOff {\\n                id\\n                nickname\\n            }\\n            playerOffType\\n            playerOn {\\n                id\\n                nickname\\n            }\\n            startTime\\n            team {\\n                id\\n                name\\n            }\\n            possessionEvents {\\n                formattedGameClock\\n                gameClock\\n                id\\n                possessionEventType\\n                startTime\\n                \\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(game_id) + "}}"
+    response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
+
+    try:
+        df = pd.DataFrame(response.json()['data']['game']['gameEvents'])
+        df = df.rename(columns = {'id':'gameEventId'})
+        df.insert(0, 'gameId', [game_id] * len(df))
+        df = df.sort_values('startTime', ascending = True).reset_index(drop = True)   
+        
+        df = df[df['gameEventType'].isin(['FIRSTKICKOFF','SECONDKICKOFF','THIRDKICKOFF','FOURTHKICKOFF','OTB','OUT','ON','OFF','SUB','END'])]
+        
+        df['teamId'] = df['team'].apply(lambda x: x.get('id', None) if isinstance(x, dict) else None)
+        df['teamName'] = df['team'].apply(lambda x: x.get('name', None) if isinstance(x, dict) else None)
+        df['playerId'] = df['player'].apply(lambda x: x.get('id', None) if isinstance(x, dict) else None)
+        df['playerName'] = df['player'].apply(lambda x: x.get('nickname', None) if isinstance(x, dict) else None)
+        df['playerOnId'] = df['playerOn'].apply(lambda x: x.get('id', None) if isinstance(x, dict) else None)
+        df['playerOnName'] = df['playerOn'].apply(lambda x: x.get('nickname', None) if isinstance(x, dict) else None)
+        df['playerOffId'] = df['playerOff'].apply(lambda x: x.get('id', None) if isinstance(x, dict) else None)
+        df['playerOffName'] = df['playerOff'].apply(lambda x: x.get('nickname', None) if isinstance(x, dict) else None)  
+        
+        possessionEvents = df['possessionEvents'].apply(pd.Series)
+        possessionEvents.index = df['gameEventId']
+    
+        # Since there can be multiple possession events per game event, we need to loop over them
+        temp_list1 = []
+        for i in range(possessionEvents.shape[-1]):
+            temp1 = possessionEvents[i].apply(pd.Series)
+            temp1 = temp1.reset_index(drop = False)
+            temp1 = temp1.rename(columns = {'id':'possessionEventId'})
+            temp1 = temp1.drop(columns = [0])
+            temp1 = temp1.dropna(how = 'all', axis = 0)
+            temp_list1.append(temp1)
+        possessionEvents = pd.concat(temp_list1, ignore_index = True)
+        possessionEvents = possessionEvents[~possessionEvents['possessionEventId'].isnull()]
+        
+        challengeEvents = possessionEvents[possessionEvents['possessionEventType'] == 'CH'].copy()
+        possessionEvents = possessionEvents[possessionEvents['possessionEventType'] != 'CH'].copy()
+    
+        ballCarryEvents = possessionEvents[possessionEvents['possessionEventType'] == 'BC'].copy()
+        possessionEvents = possessionEvents[possessionEvents['possessionEventType'] != 'BC'].copy()
+            
+        possessionEvents['challengeEvent'] = possessionEvents['gameEventId'].isin(challengeEvents['gameEventId'])
+        possessionEvents['ballCarryEvent'] = possessionEvents['gameEventId'].isin(ballCarryEvents['gameEventId'])
+        
+        df = df.merge(possessionEvents[['gameEventId','possessionEventId','possessionEventType','challengeEvent','ballCarryEvent']], how = 'left', on = 'gameEventId')
+        
+        df['playerOnId'] = np.where(df['gameEventType'].isin(['SUB','ON']), df['playerOnId'], np.nan)
+        df['playerOnName'] = np.where(df['gameEventType'].isin(['SUB','ON']), df['playerOnName'], np.nan)
+        df['playerOffId'] = np.where(df['gameEventType'].isin(['SUB','OFF']), df['playerOffId'], np.nan)
+        df['playerOffName'] = np.where(df['gameEventType'].isin(['SUB','OFF']), df['playerOffName'], np.nan)
+        
+        df = df.drop(columns = ['team','player','playerOn','playerOff','possessionEvents'])
+        
+        df = df[['gameId','gameEventId','gameEventType','possessionEventId','possessionEventType','gameClock','formattedGameClock','startTime','endTime','duration','teamId','teamName','playerId','playerName','endType','outType','playerOnId','playerOnName','playerOffId','playerOffName','challengeEvent','ballCarryEvent']]
+    
+        ints = ['gameId','gameEventId','possessionEventId','teamId','playerId','playerOnId','playerOffId']
+        for col in ints:
+            try:
+                df[col] = df[col].astype(int)
+            except:
+                df[col] = df[col].astype('Int64')
+                
+        return df
+    except:
+        print(response.text)
