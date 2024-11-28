@@ -77,6 +77,10 @@ Or alternatively, request a specific event only:
 ```
 pff.get_game_event(url, key, game_event_id)
 ```
+To retrieve just PFF FC's On-The-Ball events for a specific game, run:
+```
+pff.get_otb_data(url, key, game_id)
+```
 To retrieve all goalscoring events from a season for a given competition, run:
 ```
 pff.get_scoring_events(url, key, competition_id, season)
