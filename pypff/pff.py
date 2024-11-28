@@ -447,7 +447,7 @@ def get_otb_data(url, key, game_id):
 
     try:
         df = pd.DataFrame(response.json()['data']['game']['gameEvents'])
-        df = df.rename(columns = {'id':'gameEventId'})
+        df = df.rename(columns = {'id':'gameEventId','playerOffType':'offType'})
         df.insert(0, 'gameId', [game_id] * len(df))
         df = df.sort_values('startTime', ascending = True).reset_index(drop = True)   
         
