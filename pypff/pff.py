@@ -492,10 +492,12 @@ def get_otb_data(url, key, game_id):
         df['playerOnName'] = np.where(df['gameEventType'].isin(['SUB','ON']), df['playerOnName'], np.nan)
         df['playerOffId'] = np.where(df['gameEventType'].isin(['SUB','OFF']), df['playerOffId'], np.nan)
         df['playerOffName'] = np.where(df['gameEventType'].isin(['SUB','OFF']), df['playerOffName'], np.nan)
+
+        df['offType'] = np.where(df['offType'].isin(['R']), df['offType'], np.nan)
         
         df = df.drop(columns = ['team','player','playerOn','playerOff','possessionEvents'])
         
-        df = df[['gameId','gameEventId','gameEventType','possessionEventId','possessionEventType','gameClock','formattedGameClock','startTime','endTime','duration','teamId','teamName','playerId','playerName','endType','outType','playerOnId','playerOnName','playerOffId','playerOffName','challengeEvent','ballCarryEvent']]
+        df = df[['gameId','gameEventId','gameEventType','possessionEventId','possessionEventType','gameClock','formattedGameClock','startTime','endTime','duration','teamId','teamName','playerId','playerName','endType','offType','outType','playerOnId','playerOnName','playerOffId','playerOffName','challengeEvent','ballCarryEvent']]
     
         ints = ['gameId','gameEventId','possessionEventId','teamId','playerId','playerOnId','playerOffId']
         for col in ints:
