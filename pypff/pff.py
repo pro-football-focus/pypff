@@ -442,7 +442,7 @@ def get_otb_data(url, key, game_id):
     df: a dataframe containing the On-The-Ball events
     
     '''
-    payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n        gameEvents {\\n            id\\n            duration\\n            endTime\\n            endType\\n            formattedGameClock\\n            gameClock\\n            gameEventType\\n            outType\\n            player {\\n                id\\n                nickname\\n            }\\n            playerOff {\\n                id\\n                nickname\\n            }\\n            playerOffType\\n            playerOn {\\n                id\\n                nickname\\n            }\\n            startTime\\n            team {\\n                id\\n                name\\n            }\\n            possessionEvents {\\n                formattedGameClock\\n                gameClock\\n                id\\n                possessionEventType\\n                startTime\\n                \\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":" + str(game_id) + "}}"
+    payload = "{\"query\":\"query game ($id: ID!) {\\n    game (id: $id) {\\n        id\\n        gameEvents {\\n            id\\n            duration\\n            endTime\\n            endType\\n            formattedGameClock\\n            gameClock\\n            gameEventType\\n            outType\\n            player {\\n                id\\n                nickname\\n            }\\n            playerOff {\\n                id\\n                nickname\\n            }\\n            playerOffType\\n            playerOn {\\n                id\\n                nickname\\n            }\\n            startTime\\n            team {\\n                id\\n                name\\n            }\\n            videoUrl\\n            possessionEvents {\\n                formattedGameClock\\n                gameClock\\n                id\\n                possessionEventType\\n                startTime\\n                \\n            }\\n        }\\n    }\\n}\",\"variables\":{\"id\":"+ str(game_id) +"}}"
     response = requests.request("POST", url, headers = {'x-api-key': key, 'Content-Type': 'application/json'}, data = payload)
 
     try:
@@ -478,13 +478,13 @@ def get_otb_data(url, key, game_id):
         possessionEvents = possessionEvents[~possessionEvents['possessionEventId'].isnull()]
         
         challengeEvents = possessionEvents[possessionEvents['possessionEventType'] == 'CH'].copy()
-        possessionEvents = possessionEvents[possessionEvents['possessionEventType'] != 'CH'].copy()
     
         ballCarryEvents = possessionEvents[possessionEvents['possessionEventType'] == 'BC'].copy()
-        possessionEvents = possessionEvents[possessionEvents['possessionEventType'] != 'BC'].copy()
             
         possessionEvents['challengeEvent'] = possessionEvents['gameEventId'].isin(challengeEvents['gameEventId'])
         possessionEvents['ballCarryEvent'] = possessionEvents['gameEventId'].isin(ballCarryEvents['gameEventId'])
+        
+        possessionEvents = possessionEvents.drop_duplicates(subset='gameEventId', keep = 'last')
         
         df = df.merge(possessionEvents[['gameEventId','possessionEventId','possessionEventType','challengeEvent','ballCarryEvent']], how = 'left', on = 'gameEventId')
         
@@ -497,7 +497,7 @@ def get_otb_data(url, key, game_id):
         
         df = df.drop(columns = ['team','player','playerOn','playerOff','possessionEvents'])
         
-        df = df[['gameId','gameEventId','gameEventType','possessionEventId','possessionEventType','gameClock','formattedGameClock','startTime','endTime','duration','teamId','teamName','playerId','playerName','endType','offType','outType','playerOnId','playerOnName','playerOffId','playerOffName','challengeEvent','ballCarryEvent']]
+        df = df[['gameId','gameEventId','gameEventType','possessionEventId','possessionEventType','gameClock','formattedGameClock','startTime','endTime','duration','teamId','teamName','playerId','playerName','endType','offType','outType','playerOnId','playerOnName','playerOffId','playerOffName','challengeEvent','ballCarryEvent', 'videoUrl']]
     
         ints = ['gameId','gameEventId','possessionEventId','teamId','playerId','playerOnId','playerOffId']
         for col in ints:
