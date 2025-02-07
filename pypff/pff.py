@@ -143,7 +143,41 @@ def get_games(url, key, competition_id):
         competition.loc[:,'name'] = response.json()['data']['competition']['name']
         competition['competition'] = competition[['id','name']].to_dict(orient = 'records')
         
+        df[['stadiumId','stadiumName','pitches']] = df['stadium'].apply(pd.Series)
+        df['date'] = pd.to_datetime(df['date'])
+        df_pitches = df['pitches'].apply(pd.Series)
+        
+        for i in df_pitches.columns:
+            df_pitches[f'startDate_{i}'] = df_pitches[i].apply(lambda x: x.get('startDate', None) if isinstance(x, dict) else None)
+            df_pitches[f'startDate_{i}'] = pd.to_datetime(df_pitches[f'startDate_{i}'])
+            df_pitches[f'endDate_{i}'] = df_pitches[i].apply(lambda x: x.get('endDate', None) if isinstance(x, dict) else None)
+            df_pitches[f'endDate_{i}'] = pd.to_datetime(df_pitches[f'endDate_{i}'])
+            
+        df_pitches['id'] = df['id']
+        df_pitches['date'] = df['date']
+        
+        # Find the correct pitch index and store it in df_pitches
+        df_pitches["pitch_index"] = df.apply(lambda row: next(
+            (i for i in range(len(df_pitches.columns) // 2)  # Iterate over pitch indices
+             if row["date"] >= df_pitches.at[row.name, f"startDate_{i}"] and
+                (pd.isna(df_pitches.at[row.name, f"endDate_{i}"]) or row["date"] <= df_pitches.at[row.name, f"endDate_{i}"])),
+            None  # Default to None if no match is found
+        ), axis=1)
+        
+        df_pitches['pitch'] = df_pitches.apply(
+            lambda row: row.get(row["pitch_index"], None) if pd.notna(row["pitch_index"]) else None, 
+            axis=1
+        )
+
+        df_pitches['pitchLength'] = df_pitches['pitch'].apply(lambda x: x.get('length', None) if isinstance(x, dict) else None)
+        df_pitches['pitchWidth'] = df_pitches['pitch'].apply(lambda x: x.get('width', None) if isinstance(x, dict) else None)
+        
         df = df.merge(competition[['competition']], how = 'left', left_index = True, right_index = True)
+        df = df.merge(df_pitches[['id','pitchLength','pitchWidth']], how = 'left', on = 'id')
+        
+        df['stadium'] = df.apply(lambda row: {col: row[col] for col in ['stadiumId','stadiumName','pitchLength','pitchWidth']}, axis=1)
+        df = df.drop(columns = ['stadiumId','stadiumName','pitches','pitchLength','pitchWidth'])
+        
         df = df.reindex(sorted(df.columns), axis = 1).infer_objects()
         return df.infer_objects()
     except:
@@ -174,6 +208,27 @@ def get_game(url, key, game_id):
         df = pd.DataFrame(response.json()['data']['game'].items()).T
         df.columns = df.loc[0]
         df = df[df['awayTeam'] != 'awayTeam'].reset_index(drop = True)
+        
+        # Unpack stadium column to retrieve pitch dimensions
+        df[['stadiumId','stadiumName','pitches']] = df['stadium'].apply(pd.Series)
+        df['date'] = pd.to_datetime(df['date'])
+        df_pitches = df['pitches'].apply(pd.Series).T[0].apply(pd.Series)
+        df_pitches['startDate'] = pd.to_datetime(df_pitches['startDate'])
+        df_pitches['endDate'] = pd.to_datetime(df_pitches['endDate'], errors='coerce')  # Convert empty strings to NaT
+        
+        # One-liner to find the pitchLength
+        df['pitchLength'] = df['date'].apply(lambda d: df_pitches.loc[
+            (df_pitches['startDate'] <= d) & ((df_pitches['endDate'].isna()) | (df_pitches['endDate'] >= d)), 'length'
+        ].values[0])
+        
+        # One-liner to find the pitchWidth
+        df['pitchWidth'] = df['date'].apply(lambda d: df_pitches.loc[
+            (df_pitches['startDate'] <= d) & ((df_pitches['endDate'].isna()) | (df_pitches['endDate'] >= d)), 'width'
+        ].values[0])
+        
+        df['stadium'] = df.apply(lambda row: {col: row[col] for col in ['stadiumId','stadiumName','pitchLength','pitchWidth']}, axis=1)
+        df = df.drop(columns = ['stadiumId','stadiumName','pitches','pitchLength','pitchWidth'])
+        
         return df.infer_objects()
     except:
         print(response.text)
