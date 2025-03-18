@@ -305,6 +305,7 @@ def get_player(url, key, player_id):
     
     try:
         player_data = response.json()['data']['player']
+        first_nationality = player_data['nationality']['country'] if player_data['nationality'] else None
         second_nationality = player_data['secondNationality']['country'] if player_data['secondNationality'] else None
         player_record = {
             'player_id': player_data['id'],
@@ -314,7 +315,7 @@ def get_player(url, key, player_id):
             'height': player_data['height'],
             'nickname': player_data['nickname'],
             'position_group': player_data['positionGroupType'],
-            'nationality': player_data['nationality']['country'],
+            'nationality': first_nationality,
             'second_nationality': second_nationality,
             'transfermarkt_id': player_data['transfermarktPlayerId'],
             'rosters': player_data['rosters']  # This will remain a nested list of dicts
